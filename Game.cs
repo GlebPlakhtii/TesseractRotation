@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,15 +16,15 @@ namespace _4DRotaionCube
     {
         GameWindow window;
         Tesseract tes;
-        double a =.3;
-        double b = .3;
-        double c = .3;
-        double d = .3;
+        double XY, XZ, XW, YZ, YW, ZW = .3;
 
-        Matrix4 rotorX;
-        Matrix4 rotorZ;
-        Matrix4 rotorW;
-        Matrix4 rotorY;
+        Matrix4 rotorXY;
+        Matrix4 rotorXZ;
+        Matrix4 rotorXW;
+        Matrix4 rotorYZ;
+        Matrix4 rotorYW;
+        Matrix4 rotorZW;
+       
         Vector4[] t2;
         
         
@@ -36,24 +36,43 @@ namespace _4DRotaionCube
             window.RenderFrame += winRenderFrame;
             window.UpdateFrame += winUpdateFrame;
             tes = new Tesseract();
-            rotorX = new Matrix4(1, 0, 0, 0,
-                                0,Convert.ToSingle(Math.Cos(a)), -Convert.ToSingle(Math.Sin(a)), 0,
-                                0,Convert.ToSingle(Math.Sin(a)), Convert.ToSingle(Math.Cos(a)), 0,
+            rotorXY = new Matrix4(1, 0, 0, 0,
+                                0, 1, 0, 0,
+                               0, 0, Convert.ToSingle(Math.Cos(XY)), -Convert.ToSingle(Math.Sin(XY)),
+                               0, 0, Convert.ToSingle(Math.Sin(XY)), Convert.ToSingle(Math.Cos(XY)));
+
+            rotorXZ = new Matrix4(1, 0, 0, 0,
+                              0, Convert.ToSingle(Math.Cos(XZ)), 0, -Convert.ToSingle(Math.Sin(XZ)),
+                              0, 0, 1, 0,
+                              0, Convert.ToSingle(Math.Sin(XZ)), 0, Convert.ToSingle(Math.Cos(XZ)));
+
+
+            rotorXW = new Matrix4(1, 0, 0, 0,
+                                0, Convert.ToSingle(Math.Cos(XW)), -Convert.ToSingle(Math.Sin(XW)), 0,
+                                0, Convert.ToSingle(Math.Sin(XW)), Convert.ToSingle(Math.Cos(XW)), 0,
                                  0, 0, 0, 1);
-            rotorZ = new Matrix4(Convert.ToSingle(Math.Cos(b)), -Convert.ToSingle(Math.Sin(b)), 0, 0,
-                                Convert.ToSingle(Math.Sin(b)), Convert.ToSingle(Math.Cos(b)), 0, 0,
+
+            rotorYZ = new Matrix4
+                                 (Convert.ToSingle(Math.Cos(YZ)), 0, 0, -Convert.ToSingle(Math.Sin(YZ)),
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 Convert.ToSingle(Math.Sin(YZ)), 0, 0, Convert.ToSingle(Math.Cos(YZ))
+                                 );
+
+            rotorYW = new Matrix4(Convert.ToSingle(Math.Cos(YW)), 0, -Convert.ToSingle(Math.Sin(YW)), 0,
+                                 0, 1, 0, 0,
+                                 Convert.ToSingle(Math.Sin(YW)), 0, Convert.ToSingle(Math.Cos(YW)), 0,
+                                 0, 0, 0, 1);
+
+
+            rotorZW = new Matrix4(Convert.ToSingle(Math.Cos(ZW)), -Convert.ToSingle(Math.Sin(ZW)), 0, 0,
+                                Convert.ToSingle(Math.Sin(ZW)), Convert.ToSingle(Math.Cos(ZW)), 0, 0,
                                  0, 0, 1, 0,
                                  0, 0, 0, 1);
 
-            rotorW = new Matrix4(1, 0, 0, 0,
-                                0, 1, 0, 0,
-                               0,0, Convert.ToSingle(Math.Cos(c)), -Convert.ToSingle(Math.Sin(c)),
-                               0,0,Convert.ToSingle(Math.Sin(c)), Convert.ToSingle(Math.Cos(c)));
-                
-            rotorY = new Matrix4(Convert.ToSingle(Math.Cos(d)),0, -Convert.ToSingle(Math.Sin(d)),0,
-                                 0,1, 0, 0,
-                                 Convert.ToSingle(Math.Sin(d)),0, Convert.ToSingle(Math.Cos(d)),0,
-                                 0, 0, 0, 1);
+
+
+
 
 
 
@@ -83,17 +102,16 @@ namespace _4DRotaionCube
             
             for (int i = 0; i < tes.vertex.Length; i++)
             {
-                var p1 = mult(tes.vertex[i], rotorX);
-                var p2 = mult(p1, rotorY);
-                var p3 = mult(p2, rotorZ);
-                var p4 = mult(p3, rotorW);
-                
+                var rxy = mult(tes.vertex[i], rotorXY);
+                var rxz = mult(rxy, rotorXZ);
+                var rxw = mult(rxz, rotorXW);
+                var ryz = mult(rxw, rotorYZ);
+                var ryw = mult(ryz, rotorYW);
+                var rzw = mult(ryw, rotorZW);
 
 
 
-
-
-                t2[i] = p4; 
+                t2[i] = rzw; 
             }
            
             for (int i = 0; i < tes.vertex.Length; i++)
@@ -149,28 +167,48 @@ namespace _4DRotaionCube
                 }
             }
 
-            a += .004;
-            b += .005;
-            c += .006;
-            d += .007;
-            rotorX = new Matrix4(1, 0, 0, 0,
-                                 0, Convert.ToSingle(Math.Cos(a)), -Convert.ToSingle(Math.Sin(a)), 0,
-                                 0, Convert.ToSingle(Math.Sin(a)), Convert.ToSingle(Math.Cos(a)), 0,
-                                  0, 0, 0, 1);
-            rotorZ = new Matrix4(Convert.ToSingle(Math.Cos(b)), -Convert.ToSingle(Math.Sin(b)), 0, 0,
-                                Convert.ToSingle(Math.Sin(b)), Convert.ToSingle(Math.Cos(b)), 0, 0,
+            XY += .01;
+            XZ += .01;
+            XW += .01;
+            YZ += .01;
+            YW += .01;
+            ZW += .01;
+
+
+            rotorXY = new Matrix4(1, 0, 0, 0,
+                                0, 1, 0, 0,
+                               0, 0, Convert.ToSingle(Math.Cos(XY)), -Convert.ToSingle(Math.Sin(XY)),
+                               0, 0, Convert.ToSingle(Math.Sin(XY)), Convert.ToSingle(Math.Cos(XY)));
+
+            rotorXZ = new Matrix4(1, 0, 0, 0,
+                              0, Convert.ToSingle(Math.Cos(XZ)), 0, -Convert.ToSingle(Math.Sin(XZ)),
+                              0, 0, 1, 0,
+                              0, Convert.ToSingle(Math.Sin(XZ)), 0, Convert.ToSingle(Math.Cos(XZ)));
+
+
+            rotorXW = new Matrix4(1, 0, 0, 0,
+                                0, Convert.ToSingle(Math.Cos(XW)), -Convert.ToSingle(Math.Sin(XW)), 0,
+                                0, Convert.ToSingle(Math.Sin(XW)), Convert.ToSingle(Math.Cos(XW)), 0,
+                                 0, 0, 0, 1);
+
+            rotorYZ = new Matrix4
+                                 (Convert.ToSingle(Math.Cos(YZ)), 0, 0, -Convert.ToSingle(Math.Sin(YZ)),
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 Convert.ToSingle(Math.Sin(YZ)), 0, 0, Convert.ToSingle(Math.Cos(YZ))
+                                 );
+
+            rotorYW = new Matrix4(Convert.ToSingle(Math.Cos(YW)), 0, -Convert.ToSingle(Math.Sin(YW)), 0,
+                                 0, 1, 0, 0,
+                                 Convert.ToSingle(Math.Sin(YW)), 0, Convert.ToSingle(Math.Cos(YW)), 0,
+                                 0, 0, 0, 1);
+
+
+            rotorZW = new Matrix4(Convert.ToSingle(Math.Cos(ZW)), -Convert.ToSingle(Math.Sin(ZW)), 0, 0,
+                                Convert.ToSingle(Math.Sin(ZW)), Convert.ToSingle(Math.Cos(ZW)), 0, 0,
                                  0, 0, 1, 0,
                                  0, 0, 0, 1);
 
-            rotorW = new Matrix4(1, 0, 0, 0,
-                                0, 1, 0, 0,
-                               0, 0, Convert.ToSingle(Math.Cos(c)), -Convert.ToSingle(Math.Sin(c)),
-                               0, 0, Convert.ToSingle(Math.Sin(c)), Convert.ToSingle(Math.Cos(c)));
-
-            rotorY = new Matrix4(Convert.ToSingle(Math.Cos(d)), 0, -Convert.ToSingle(Math.Sin(d)), 0,
-                                 0, 1, 0, 0,
-                                 Convert.ToSingle(Math.Sin(d)), 0, Convert.ToSingle(Math.Cos(d)), 0,
-                                 0, 0, 0, 1);
 
 
 
