@@ -16,7 +16,12 @@ namespace _4DRotaionCube
     {
         GameWindow window;
         Tesseract tes;
-        double XY, XZ, XW, YZ, YW, ZW = .3;
+        double XY  = .2;
+        double XZ = .2;
+        double XW = .2;
+        double YZ = .2;
+        double YW = .2;
+        double ZW = .2;
 
         Matrix4 rotorXY;
         Matrix4 rotorXZ;
@@ -82,24 +87,7 @@ namespace _4DRotaionCube
 
         private void winUpdateFrame(object sender, FrameEventArgs e)
         {
-           
-           
-        }
-        private Vector4 mult(Vector4 v, Matrix4 m)
-        {
-            return new Vector4(
-                m.M11 * v.X + m.M12 * v.Y + m.M13 * v.Z + m.M14 * v.W,
-                m.M21 * v.X + m.M22 * v.Y + m.M23 * v.Z + m.M24 * v.W,
-                m.M31 * v.X + m.M32 * v.Y + m.M33 * v.Z + m.M34 * v.W,
-                m.M41 * v.X + m.M42 * v.Y + m.M43 * v.Z + m.M44 * v.W);
-        }
 
-        private void winRenderFrame(object sender, FrameEventArgs e)
-        {
-            GL.ClearColor(Color.Aqua);
-            GL.Clear(OpenTK.Graphics.ClearBufferMask.ColorBufferBit);
-
-            
             for (int i = 0; i < tes.vertex.Length; i++)
             {
                 var rxy = mult(tes.vertex[i], rotorXY);
@@ -111,74 +99,20 @@ namespace _4DRotaionCube
 
 
 
-                t2[i] = rzw; 
-            }
-           
-            for (int i = 0; i < tes.vertex.Length; i++)
-            {
-                for (int j = 0; j < tes.vertex.Length; j++)
-                {
-                    if (i != j)
-                    {
-                        int a4 = i % 2;
-                        int a3 = i / 2 % 2;
-                        int a2 = i / 4 % 2;
-                        int a1 = i / 8 % 2;
-
-                        int b4 = j % 2;  
-                        int b3 = j / 2 % 2;
-                        int b2 = j / 4 % 2;
-                        int b1 = j / 8 % 2;
-
-                        if ((a1 == b1 && a2 == b2 && a3 == b3 && a4 != b4) ||
-                            (a1 == b1 && a2 == b2 && a3 != b3 && a4 == b4) ||
-                            (a1 == b1 && a2 != b2 && a3 == b3 && a4 == b4) ||
-                            (a1 != b1 && a2 == b2 && a3 == b3 && a4 == b4))
-                             
-                        {
-
-                            
-                            GL.Begin(OpenTK.Graphics.BeginMode.Lines);
-                            
-                            GL.Color3(1f, 0, 0);
-                            GL.LineWidth(5);
-                            GL.Vertex2(t2[i].X/(.2*t2[i].Z+.2)*(.2 * t2[i].W + .2) - .7, t2[i].Y/(.2*t2[i].Z+.2)*(.2 * t2[i].W + .2) + .4);
-                            GL.Vertex2(t2[j].X /(.2*t2[j].Z +.2)* (.2 * t2[j].W + .2) - .7, t2[j].Y / (.2 *t2[j].Z +.2)* (.2 * t2[j].W + .2) + .4);
-
-                            GL.Vertex2(t2[i].X / (.2 * t2[i].Y + .2) * (.2 * t2[i].W + .2), t2[i].Z / (.2 * t2[i].Y + .2) * (.2 * t2[i].W + .2) + .4);
-                            GL.Vertex2(t2[j].X / (.2 * t2[j].Y + .2) * (.2 * t2[j].W + .2), t2[j].Z / (.2 * t2[j].Y + .2) * (.2 * t2[j].W + .2) + .4);
-
-                            GL.Vertex2(t2[i].X / (.2 * t2[i].Z + .2)* (.2 * t2[i].Y + .2) + .7, t2[i].W / (.2 * t2[i].Z + .2) * (.2 * t2[i].Y + .2) + .4);
-                            GL.Vertex2(t2[j].X / (.2 * t2[j].Z + .2) * (.2 * t2[j].Y + .2) + .7, t2[j].W / (.2 * t2[j].Z + .2) * (.2 * t2[j].Y + .2)+ .4);
-
-                            GL.Vertex2(t2[i].Y / (.2 * t2[i].X + .2) * (.2 * t2[i].W + .2) - .7, t2[i].Z / (.2 * t2[i].X + .2) * (.2 * t2[i].W + .2) - .4);
-                            GL.Vertex2(t2[j].Y / (.2 * t2[j].X + .2) * (.2 * t2[j].W + .2) - .7, t2[j].Z / (.2 * t2[j].X + .2) * (.2 * t2[j].W + .2) - .4);
-
-                            GL.Vertex2(t2[i].Y / (.2 * t2[i].Z + .2) * (.2 * t2[i].X + .2), t2[i].W / (.2 * t2[i].Z + .2) * (.2 * t2[i].X + .2) - .4);
-                            GL.Vertex2(t2[j].Y / (.2 * t2[j].Z + .2) * (.2 * t2[j].X + .2), t2[j].W / (.2 * t2[j].Z + .2) * (.2 * t2[j].X + .2) - .4);
-
-                            GL.Vertex2(t2[i].Z / (.2 * t2[i].Y + .2) * (.2 * t2[i].X + .2) + .7, t2[i].W / (.2 * t2[i].Y + .2) * (.2 * t2[i].X + .2) - .4);
-                            GL.Vertex2(t2[j].Z / (.2 * t2[j].Y + .2) * (.2 * t2[j].X + .2) + .7, t2[j].W / (.2 * t2[j].Y + .2) * (.2 * t2[j].X + .2) - .4);
-                            GL.End();
-                        }
-                    }
-
-
-                }
+                t2[i] = rzw;
             }
 
-            XY += .01;
-            XZ += .01;
-            XW += .01;
-            YZ += .01;
-            YW += .01;
-            ZW += .01;
-
+            XY += .004;
+            XZ += .005;
+            XW += .006;
+            YZ += .007;
+            YW += .008;
+            ZW += .008;
 
             rotorXY = new Matrix4(1, 0, 0, 0,
-                                0, 1, 0, 0,
-                               0, 0, Convert.ToSingle(Math.Cos(XY)), -Convert.ToSingle(Math.Sin(XY)),
-                               0, 0, Convert.ToSingle(Math.Sin(XY)), Convert.ToSingle(Math.Cos(XY)));
+                               0, 1, 0, 0,
+                              0, 0, Convert.ToSingle(Math.Cos(XY)), -Convert.ToSingle(Math.Sin(XY)),
+                              0, 0, Convert.ToSingle(Math.Sin(XY)), Convert.ToSingle(Math.Cos(XY)));
 
             rotorXZ = new Matrix4(1, 0, 0, 0,
                               0, Convert.ToSingle(Math.Cos(XZ)), 0, -Convert.ToSingle(Math.Sin(XZ)),
@@ -211,6 +145,110 @@ namespace _4DRotaionCube
 
 
 
+        }
+        private Vector4 mult(Vector4 v, Matrix4 m)
+        {
+            return new Vector4(
+                m.M11 * v.X + m.M12 * v.Y + m.M13 * v.Z + m.M14 * v.W,
+                m.M21 * v.X + m.M22 * v.Y + m.M23 * v.Z + m.M24 * v.W,
+                m.M31 * v.X + m.M32 * v.Y + m.M33 * v.Z + m.M34 * v.W,
+                m.M41 * v.X + m.M42 * v.Y + m.M43 * v.Z + m.M44 * v.W);
+        }
+
+        private void winRenderFrame(object sender, FrameEventArgs e)
+        {
+            GL.ClearColor(Color.FromArgb(0,0,0));
+            GL.Clear(OpenTK.Graphics.ClearBufferMask.ColorBufferBit);
+
+            
+            for (int i = 0; i < tes.vertex.Length; i++)
+            {
+                for (int j = 0; j < tes.vertex.Length; j++)
+                {
+                    if (i != j)
+                    {
+                        int a4 = i % 2;
+                        int a3 = i / 2 % 2;
+                        int a2 = i / 4 % 2;
+                        int a1 = i / 8 % 2;
+
+                        int b4 = j % 2;  
+                        int b3 = j / 2 % 2;
+                        int b2 = j / 4 % 2;
+                        int b1 = j / 8 % 2;
+
+                        if ((a1 == b1 && a2 == b2 && a3 == b3 && a4 != b4) ||
+                            (a1 == b1 && a2 == b2 && a3 != b3 && a4 == b4) ||
+                            (a1 == b1 && a2 != b2 && a3 == b3 && a4 == b4) ||
+                            (a1 != b1 && a2 == b2 && a3 == b3 && a4 == b4))
+                             
+                        {
+
+                            double c = 1;
+                            GL.Begin(OpenTK.Graphics.BeginMode.Lines);
+
+                            c = (t2[i].Z+.5) * (t2[i].W + .5) * 1.5;
+                            GL.Color3(1-c,1-c,1-c);
+                            GL.LineWidth(99);
+                            GL.Vertex2(t2[i].X/(.2*t2[i].Z+.2)*(.2 * t2[i].W + .2) - .7, t2[i].Y/(.2*t2[i].Z+.2)*(.2 * t2[i].W + .2) + .4);
+                            c = (t2[j].Z + .5) * (t2[j].W + .5) * 1.5;
+                            GL.Color3(1-c, 1-c, 1-c);
+                            GL.Vertex2(t2[j].X /(.2*t2[j].Z +.2)* (.2 * t2[j].W + .2) - .7, t2[j].Y / (.2 *t2[j].Z +.2)* (.2 * t2[j].W + .2) + .4);
+                            c = (t2[i].Y + .5) * (t2[i].W + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[i].X / (.2 * t2[i].Y + .2) * (.2 * t2[i].W + .2), t2[i].Z / (.2 * t2[i].Y + .2) * (.2 * t2[i].W + .2) + .4);
+                            c = (t2[j].Y + .5) * (t2[j].W + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[j].X / (.2 * t2[j].Y + .2) * (.2 * t2[j].W + .2), t2[j].Z / (.2 * t2[j].Y + .2) * (.2 * t2[j].W + .2) + .4);
+
+
+                            c = (t2[i].Y + .5) * (t2[i].Z + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[i].X / (.2 * t2[i].Z + .2)* (.2 * t2[i].Y + .2) + .7, t2[i].W / (.2 * t2[i].Z + .2) * (.2 * t2[i].Y + .2) + .4);
+                            c = (t2[j].Y + .5) * (t2[j].Z + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+
+                            GL.Vertex2(t2[j].X / (.2 * t2[j].Z + .2) * (.2 * t2[j].Y + .2) + .7, t2[j].W / (.2 * t2[j].Z + .2) * (.2 * t2[j].Y + .2)+ .4);
+
+
+                            c = (t2[i].X + .5) * (t2[i].W + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[i].Y / (.2 * t2[i].X + .2) * (.2 * t2[i].W + .2) - .7, t2[i].Z / (.2 * t2[i].X + .2) * (.2 * t2[i].W + .2) - .4);
+                            c = (t2[j].X + .5) * (t2[j].W + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[j].Y / (.2 * t2[j].X + .2) * (.2 * t2[j].W + .2) - .7, t2[j].Z / (.2 * t2[j].X + .2) * (.2 * t2[j].W + .2) - .4);
+
+
+                            c = (t2[i].X + .5) * (t2[i].Z + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[i].Y / (.2 * t2[i].Z + .2) * (.2 * t2[i].X + .2), t2[i].W / (.2 * t2[i].Z + .2) * (.2 * t2[i].X + .2) - .4);
+                            c = (t2[j].X + .5) * (t2[j].Z + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[j].Y / (.2 * t2[j].Z + .2) * (.2 * t2[j].X + .2), t2[j].W / (.2 * t2[j].Z + .2) * (.2 * t2[j].X + .2) - .4);
+
+
+                            c = (t2[i].X + .5) * (t2[i].Y + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[i].Z / (.2 * t2[i].Y + .2) * (.2 * t2[i].X + .2) + .7, t2[i].W / (.2 * t2[i].Y + .2) * (.2 * t2[i].X + .2) - .4);
+
+                            c = (t2[j].X + .5) * (t2[j].Y + .5) * 1.5;
+                            GL.Color3(1 - c, 1 - c, 1 - c);
+                            GL.Vertex2(t2[j].Z / (.2 * t2[j].Y + .2) * (.2 * t2[j].X + .2) + .7, t2[j].W / (.2 * t2[j].Y + .2) * (.2 * t2[j].X + .2) - .4);
+                            GL.End();
+                        }
+                    }
+
+
+                }
+            }
+
+           
+
+
+           
+
+
+
 
             window.SwapBuffers();
 
@@ -220,7 +258,7 @@ namespace _4DRotaionCube
         private void winLoad(object sender, EventArgs e)
         {
             GL.Enable(OpenTK.Graphics.EnableCap.LineSmooth);
-           
+          
         }
     }
 }
